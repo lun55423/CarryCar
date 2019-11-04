@@ -534,14 +534,14 @@
           <GroupName>APP</GroupName>
           <Files>
             <File>
-              <FileName>APP.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\APP.c</FilePath>
-            </File>
-            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\APP\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>APP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\APP\APP.c</FilePath>
             </File>
           </Files>
         </Group>

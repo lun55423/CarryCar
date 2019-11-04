@@ -17,3 +17,8 @@
 ..\obj\usart2.o: ..\STM32F10x_FWLib\inc\stm32f10x_dma.h
 ..\obj\usart2.o: F:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\usart2.o: F:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+..\obj\usart2.o: ..\BSP\timer\timer.h
+..\obj\usart2.o: ..\APP\APP.h
+..\obj\usart2.o: ..\APP\pid.h
+..\obj\usart2.o: ..\BSP\TIM_CAP\capture.h
+..\obj\usart2.o: ..\BSP\TIM_CAP\capture2.h

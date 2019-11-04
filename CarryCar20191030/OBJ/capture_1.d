@@ -1,0 +1,14 @@
+..\obj\capture.o: ..\BSP\TIM_CAP\capture.c
+..\obj\capture.o: ..\BSP\TIM_CAP\capture.h
+..\obj\capture.o: ..\SYSTEM\sys\sys.h
+..\obj\capture.o: ..\CORE\stm32f10x.h
+..\obj\capture.o: ..\CORE\core_cm3.h
+..\obj\capture.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\capture.o: ..\CORE\system_stm32f10x.h
+..\obj\capture.o: ..\CORE\stm32f10x_conf.h
+..\obj\capture.o: ..\STM32F10x_FWLib\inc\stm32f10x_gpio.h
+..\obj\capture.o: ..\CORE\stm32f10x.h
+..\obj\capture.o: ..\STM32F10x_FWLib\inc\stm32f10x_rcc.h
+..\obj\capture.o: ..\STM32F10x_FWLib\inc\stm32f10x_tim.h
+..\obj\capture.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
+..\obj\capture.o: ..\STM32F10x_FWLib\inc\misc.h

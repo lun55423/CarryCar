@@ -11,6 +11,11 @@
 
 extern u32 time_cnt;
 u16 a=0,b=0,c=0,d=0;
+u16 delta_cnt = 0;
+u32 last_cnt = 0;
+char time_flag = 0;
+char task_flag = 0;
+char segment_flag = 0;
 void Motor_Control(u16 m1_tar,u16 m2_tar,u16 m3_tar,u16 m4_tar)
 {
 	Wheel_PID(Tim2_Capture_1.freq,m1_tar,&pid_m1);
@@ -23,67 +28,116 @@ void Motor_Control(u16 m1_tar,u16 m2_tar,u16 m3_tar,u16 m4_tar)
 	M3_OUT(pid_m3.output);
 	M4_OUT(pid_m4.output);
 }
-u32 time_cc = 0;
-static u8 is_first = 0;
-static u16 parallel[2] = {0};
-u32 last_time = 0;
-u8 flag_1 = 0;
+u8 ff = 0;
 void APP_Init(void)
 {
-	parallel[0] = parallel[1];
-	parallel[1] = Openmv.theta_parallel;
-	if((abs(parallel[1] - parallel[0]) > 50) && is_first == 0)
+	if(time_flag==0)
 	{
-		Openmv.line_num++;
-		is_first = 1;
-		last_time = time_cnt;
-		parallel[0] = parallel[1] = 0;
-		Openmv.theta_parallel = 0;
+		last_cnt = time_cnt;
+		time_flag = 1;
 	}
-	else if((abs(parallel[1] - parallel[0]) > 50) && is_first == 1)
-	{
-//		if(flag_1 == 0)
+	
+	delta_cnt = time_cnt - last_cnt;
+//	if(task_flag==0&&delta_cnt<520)
+//	{
+//		Set_GoForward_ALL();	
+//		Motor_Control(600,600,600,600);
+//		
+//	}
+//	else if(task_flag==0&&delta_cnt>520)
+//	{
+//		static u16 n0 = 0;
+//		Set_Break_All();
+//  	Motor_Control(0,0,0,0);
+//		if(++n0==5000)
 //		{
-//			last_time = time_cnt;
-//			flag_1 = 1;
+//		  task_flag++;
+//			time_flag=0;
 //		}
-		if((time_cnt - last_time) > 900) 
+//	}
+//	if(task_flag==1&&delta_cnt<580)
+//	{
+//		Set_Turn_R();	
+//		Motor_Control(1000,1000,1000,1000);
+//		
+//	}
+//	else if(task_flag==1&&delta_cnt>580)
+//	{
+//		static u16 n1 = 0;
+//		Set_Break_All();
+//  	Motor_Control(0,0,0,0);
+//		if(++n1==5000)
+//		{
+//		  task_flag++;
+//			time_flag=0;
+//		}
+//	}
+	if(Openmv.line_parl<6&&task_flag==2)
+	{
+		if(segment_flag==0&&task_flag==0&&delta_cnt<500)
 		{
-			Openmv.line_num++;
-			last_time = time_cnt;
-			parallel[1] = parallel[0] = 0;
-			Openmv.theta_parallel = 0;
-		}else if((time_cnt - last_time) < 300)
+		PID_General(90,Openmv.theta_vertical,&pid_line_theta);
+		Set_GoForward_ALL();
+		Motor_Control( pid_line_x.output-pid_line_theta.output + 400,\
+								 -pid_line_x.output+pid_line_theta.output + 400,\
+								 pid_line_x.output+pid_line_theta.output + 400,\
+								 -pid_line_x.output-pid_line_theta.output + 400);
+		}			
+	  else if(segment_flag==0&&task_flag==0&&delta_cnt>500)
+	  {
+		  	Set_GoForward_ALL();
+		    Motor_Control(300,200,200,200);
+	  }
+		else if(segment_flag==1)
 		{
-			last_time = time_cnt;
-			parallel[1] = parallel[0] = 0;
-			Openmv.theta_parallel = 0;
+			segment_flag=0;
+			time_flag=0;
 		}
-		
-			
-		//parallel[1] = parallel[0] = 0;
-		//is_first = 0;
-//		if(is_first == 0) 
-//		{
-//			time_cc = time_cnt;
-//			is_first = 1;
-//		}
-//		if( (time_cnt-time_cc) > 500) 
-//		{
-//			Openmv.line_num++;
-//			is_first = 0;
-//		}
 	}
-	
-	PID_General(90,Openmv.theta_vertical,&pid_line_theta);
-	//PID_General(Openmv.x,80,&pid_line_x);
-	Set_GoForward_ALL();
-	Motor_Control( pid_line_x.output-pid_line_theta.output + 1000,\
-								 -pid_line_x.output+pid_line_theta.output + 1000,\
-								 pid_line_x.output+pid_line_theta.output + 1000,\
-								 -pid_line_x.output-pid_line_theta.output + 1000);  
-	
+	else
+	{
+		static u16 n2 = 0;
+		Set_Break_All();
+		Motor_Control(0,0,0,0);
+		
+	}
+//		PID_General(90,Openmv.theta_parallel,&pid_line_x);
+//		Set_Shift_L();
+//		Motor_Control( pid_line_x.output + 400,\
+//								 -pid_line_x.output + 400,\
+//								 pid_line_x.output + 400,\
+//								 -pid_line_x.output + 400);  
 
+//	if(task_flag==0&&Openmv.line_parl<3)
+//	{
+//		Set_GoForward_ALL();
+//		Motor_Control(200,200,200,200);
+//		
+//	}
+//	else if(Openmv.line_parl>=3&&task_flag==0)
+//	{
+//		static u16 n0 = 0;
+//		Set_Break_All();
+//		Motor_Control(0,0,0,0);
+//		n0++;
+//		if(n0>=1000)
+//		{
+//			task_flag++;
+//			time_flag = 0;
+//		}
+//		
+//	}
+//	else if(delta_cnt<550&&task_flag==1)
+//	{
+//		Set_Turn_R();
+//		Motor_Control(1000,1000,1000,1000);
+//	}
+//	else if(delta_cnt>550&&task_flag==1)
+//	{
+//		Set_Break_All();
+//		Motor_Control(0,0,0,0);
+	//}
+	
 }
 
 
@@ -127,4 +181,5 @@ void APP_Init(void)
 	 //Motor_Control(1000,1000,1000,1000);
 	//PID_General(Openmv.theta_vertical,90,&pid_line_theta);
 	//Motor_Control(pid_line_theta.output+offset,pid_line_theta.output+offset,pid_line_theta.output+offset,pid_line_theta.output+offset);
-	
+
+
